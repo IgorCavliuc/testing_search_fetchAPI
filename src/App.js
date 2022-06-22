@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import SearchPanel from "./Components/SearchPanel";
 
 function App() {
+  const [state, setState] = useState([]);
+  const [value, setValue] = useState("Adi Gallia");
+  useEffect(() => {
+    const url = `http://localhost:3000/db.json?title=50`;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
+
+        // const obj = Object.assign({}, json.db)
+        setState(json.db);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const setPropsValue = (item) => {
+    setValue(item);
+  };
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Testing Fetch API search_request</h1>
+      <SearchPanel setPropsValue={setPropsValue} />
+      <ul>
+        {state.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
     </div>
   );
 }
